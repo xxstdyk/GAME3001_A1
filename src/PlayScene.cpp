@@ -62,7 +62,7 @@ void PlayScene::start() {
 	m_pHotkeyExplainerLabel->setParent(this);
 	addChild(m_pHotkeyExplainerLabel);
 
-	m_pInstructionsLabel = new Label("Use IMGUI to switch between behaviours", "Consolas", 24, black, glm::vec2(400.0f, 56.0f));
+	m_pInstructionsLabel = new Label("Use IMGUI or 1-4 to switch between behaviours", "Consolas", 24, black, glm::vec2(400.0f, 56.0f));
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
 
@@ -90,13 +90,30 @@ void PlayScene::GUI_Function() const {
 
 	ImGui::Begin("GAME3001 - Assignment 1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
+
+	if (ImGui::Button("Seeking")) {
+
+	} ImGui::SameLine();
+
+	if (ImGui::Button("Fleeing")) {
+
+	} ImGui::SameLine();
+
+	if (ImGui::Button("Arrival")) {
+
+	} ImGui::SameLine();
+
+	if (ImGui::Button("Obstacle Avoidance")) {
+
+	}
+
 	ImGui::Separator();
 
 	if (ImGui::Button("Start")) {
 
 		m_pSpaceShip->setEnabled(true);
-	}	
-	
+	}
+
 	ImGui::SameLine();
 
 	if (ImGui::Button("Reset")) {
