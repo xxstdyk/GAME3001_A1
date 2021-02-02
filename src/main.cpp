@@ -19,7 +19,7 @@ int main(int argc, char * args[])
 	freopen("CON", "w", stdout);
 
 
-	TheGame::Instance()->init("SDLEngine 0.24", 100, 100, 800, 600, false);
+	TheGame::Instance()->init("GAME3001 - Assignment 1 - Oostdyk, Nicholas", 100, 100, 800, 600, false);
 
 	while (TheGame::Instance()->isRunning())
 	{

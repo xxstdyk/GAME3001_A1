@@ -7,9 +7,15 @@
 #include "ship.h"
 #include "Button.h"
 
-class StartScene final : public Scene
-{
-public:
+class StartScene final : public Scene {
+
+	private:
+	Label *m_pTitleLabel { };
+	Label *m_pNameLabel { };
+
+	Button *m_pStartButton;
+
+	public:
 	StartScene();
 	~StartScene();
 
@@ -19,14 +25,7 @@ public:
 	virtual void clean() override;
 	virtual void handleEvents() override;
 	virtual void start() override;
-	
-private:
-	Label* m_pStartLabel{};
-	Label* m_pInstructionsLabel{};
 
-	Ship* m_pShip{};
-
-	Button* m_pStartButton;
 };
 
 #endif /* defined (__START_SCENE__) */
