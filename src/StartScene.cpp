@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "glm/gtx/string_cast.hpp"
 #include "EventManager.h"
+#include "Renderer.h"
 
 StartScene::StartScene() {
 	StartScene::start();
@@ -12,6 +13,8 @@ StartScene::~StartScene()
 = default;
 
 void StartScene::draw() {
+
+	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 190, 235, 233, 255);
 	drawDisplayList();
 }
 
@@ -38,11 +41,11 @@ void StartScene::handleEvents() {
 
 void StartScene::start() {
 	const SDL_Color black = { 0, 0, 0, 255 };
-	m_pTitleLabel = new Label("Assignment 1", "Consolas", 48, black, glm::vec2(400.0f, 100.0f));
+	m_pTitleLabel = new Label("Assignment 1", "Consolas", 54, black, glm::vec2(400.0f, 140.0f));
 	m_pTitleLabel->setParent(this);
 	addChild(m_pTitleLabel);
 
-	m_pNameLabel = new Label("Nick Oostdyk - 101335730", "Consolas", 32, black, glm::vec2(400.0f, 200.0f));
+	m_pNameLabel = new Label("Nick Oostdyk - 101335730", "Consolas", 32, black, glm::vec2(400.0f, 220.0f));
 	m_pNameLabel->setParent(this);
 	addChild(m_pNameLabel);
 

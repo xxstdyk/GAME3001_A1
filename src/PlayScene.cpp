@@ -16,12 +16,13 @@ PlayScene::~PlayScene()
 = default;
 
 void PlayScene::draw() {
+
 	if (EventManager::Instance().isIMGUIActive()) {
 		GUI_Function();
 	}
 
 	drawDisplayList();
-	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 190, 235, 233, 255);
 }
 
 void PlayScene::update() {
@@ -52,8 +53,18 @@ void PlayScene::handleEvents() {
 }
 
 void PlayScene::start() {
+	const SDL_Color black = { 0, 0, 0, 255 };
+
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
+
+	m_pHotkeyExplainerLabel = new Label("Use ` to open the IMGUI interface", "Consolas", 24, black, glm::vec2(400.0f, 24.0f));
+	m_pHotkeyExplainerLabel->setParent(this);
+	addChild(m_pHotkeyExplainerLabel);
+
+	m_pInstructionsLabel = new Label("Use IMGUI to switch between behaviours", "Consolas", 24, black, glm::vec2(400.0f, 56.0f));
+	m_pInstructionsLabel->setParent(this);
+	addChild(m_pInstructionsLabel);
 
 	m_pTarget = new Target();
 	m_pTarget->getTransform()->position = glm::vec2(700.0f, 300.0f);
@@ -77,32 +88,9 @@ void PlayScene::GUI_Function() const {
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 
-	ImGui::Begin("GAME3001 - Lab 2", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
+	ImGui::Begin("GAME3001 - Assignment 1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
-	static float shipSpeed = 10.0f;
-	if (ImGui::SliderFloat("MaxSpeed", &shipSpeed, 0.0f, 80.0f)) { 
-	
-		m_pSpaceShip->setMaxSpeed(shipSpeed);
-	}
-
-	static float accelerationRate = 2;
-
-	if (ImGui::SliderFloat("Acceleration Rate", &accelerationRate, 0.0f, 50.0f)) { 
-	
-		m_pSpaceShip->setAccelerationRate(accelerationRate);
-	}
-
-	static float angInRadians = m_pSpaceShip->getRotation();
-	if (ImGui::SliderAngle("Angle", &angInRadians)) {
-		
-		m_pSpaceShip->setRotation(angInRadians * Util::Rad2Deg);
-	}
-
-	static float turnRate = 5.0f;
-	if (ImGui::SliderFloat("Turn Rate", &turnRate, 0.0f, 20.0f)) { 
-	
-		m_pSpaceShip->setTurnRate(turnRate);
-	}
+	ImGui::Separator();
 
 	if (ImGui::Button("Start")) {
 
@@ -117,20 +105,6 @@ void PlayScene::GUI_Function() const {
 		m_pSpaceShip->setEnabled(false);
 		m_pSpaceShip->getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
 		m_pSpaceShip->setRotation(0.0f);
-
-		turnRate = 5.0f;
-		accelerationRate = 2.0f;
-		shipSpeed = 10.0f;
-		angInRadians = m_pSpaceShip->getRotation();
-	}
-
-	ImGui::Separator();
-
-	static float targetPos[2] = { m_pTarget->getTransform()->position.x, m_pTarget->getTransform()->position.y };
-	if (ImGui::SliderFloat2("Target", targetPos, 0.0f, 800.0f)) {
-
-		m_pTarget->getTransform()->position = glm::vec2(targetPos[0], targetPos[1]);
-		m_pSpaceShip->setDestination(m_pTarget->getTransform()->position);
 	}
 
 	ImGui::End();

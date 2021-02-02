@@ -10,16 +10,6 @@
 #include "Obstacle.h"
 
 class PlayScene : public Scene {
-	public:
-	PlayScene();
-	~PlayScene();
-
-	// Scene LifeCycle Functions
-	virtual void draw() override;
-	virtual void update() override;
-	virtual void clean() override;
-	virtual void handleEvents() override;
-	virtual void start() override;
 
 	private:
 	// IMGUI Function
@@ -32,8 +22,21 @@ class PlayScene : public Scene {
 	Target *m_pTarget;
 	Obstacle *m_pObstacle;
 
-
 	// UI Items
+	Label *m_pHotkeyExplainerLabel { };
+	Label *m_pInstructionsLabel { };
+
+	public:
+	PlayScene();
+	~PlayScene();
+
+	// Scene LifeCycle Functions
+	virtual void draw() override;
+	virtual void update() override;
+	virtual void clean() override;
+	virtual void handleEvents() override;
+	virtual void start() override;
+
 
 };
 
