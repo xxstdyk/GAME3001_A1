@@ -12,6 +12,7 @@ class SpaceShip final : public DisplayObject {
 	private:
 	Behaviour m_currBehaviour;
 
+
 	glm::vec2
 		m_shipCenterPoint,
 		m_destination,
@@ -48,6 +49,8 @@ class SpaceShip final : public DisplayObject {
 	void Avoid();
 
 	// Public Variables
+	public:
+	DisplayObject *obstacle;
 
 	// Public Functions
 	public:

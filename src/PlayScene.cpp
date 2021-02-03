@@ -8,6 +8,8 @@
 #include "imgui_sdl.h"
 #include "Renderer.h"
 
+#include "SoundManager.h"
+
 PlayScene::PlayScene() {
 	PlayScene::start();
 }
@@ -26,6 +28,8 @@ void PlayScene::draw() {
 }
 
 void PlayScene::update() {
+
+	CollisionManager::AABBCheck(m_pSpaceShip, m_pTarget);
 
 	updateDisplayList();
 
@@ -91,12 +95,21 @@ void PlayScene::start() {
 	m_pTarget->setEnabled(true);
 	addChild(m_pTarget);
 
+	// Obstacle
+	m_pObstacle = new Obstacle();
+	m_pObstacle->setEnabled(false);
+	m_pObstacle->getTransform()->position = glm::vec2(
+		400 - m_pObstacle->getWidth()/2, 300 - m_pObstacle->getHeight() / 2
+	);
+	addChild(m_pObstacle);
+
 	// Ship
 	m_pSpaceShip = new SpaceShip();
 	m_pSpaceShip->setEnabled(true);
 	m_pSpaceShip->setDestination(glm::vec2(
 		m_pTarget->getTransform()->position.x + m_pTarget->getWidth() / 2,
 		m_pTarget->getTransform()->position.y + m_pTarget->getHeight() / 2));
+	m_pSpaceShip->obstacle = m_pObstacle;
 	addChild(m_pSpaceShip);
 }
 
@@ -106,30 +119,46 @@ void PlayScene::SetupScene(const Behaviour _behaviour) {
 
 	switch (_behaviour) {
 
-		case Behaviour::AVOID:
-
 		case Behaviour::SEEK:
 		case Behaviour::ARRIVE:
+
+			m_pObstacle->setEnabled(false);
 
 			m_pTarget->getTransform()->position = glm::vec2(480, 280);
 
 			m_pSpaceShip->setDestination(glm::vec2(
 				m_pTarget->getTransform()->position.x + m_pTarget->getWidth() / 2,
 				m_pTarget->getTransform()->position.y + m_pTarget->getHeight() / 2));
-
 			m_pSpaceShip->getTransform()->position = glm::vec2(-100, 100);
+			m_pSpaceShip->setMaxSpeed(8.0f);
 
 			break;
 
 		case Behaviour::FLEE:
 
+			m_pObstacle->setEnabled(false);
+
 			m_pTarget->getTransform()->position = glm::vec2(480, 280);
 
 			m_pSpaceShip->setDestination(glm::vec2(
 				m_pTarget->getTransform()->position.x + m_pTarget->getWidth() / 2,
 				m_pTarget->getTransform()->position.y + m_pTarget->getHeight() / 2));
-
 			m_pSpaceShip->getTransform()->position = glm::vec2(300 - 64, 200 - 64);
+			m_pSpaceShip->setMaxSpeed(8.0f);
+
+			break;
+
+		case Behaviour::AVOID:
+
+			m_pTarget->getTransform()->position = glm::vec2(680, 280);
+
+			m_pSpaceShip->setDestination(glm::vec2(
+				m_pTarget->getTransform()->position.x + m_pTarget->getWidth() / 2,
+				m_pTarget->getTransform()->position.y + m_pTarget->getHeight() / 2));
+			m_pSpaceShip->getTransform()->position = glm::vec2(-100, 100);
+			m_pSpaceShip->setMaxSpeed(8.0f);
+
+			m_pObstacle->setEnabled(true);
 
 			break;
 

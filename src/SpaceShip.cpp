@@ -24,7 +24,7 @@ SpaceShip::SpaceShip() {
 	getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
 	getRigidBody()->isColliding = false;
 
-	m_whiskerLen = 120.0f;
+	m_whiskerLen = 200.0f;
 	m_dangerRadius = 150.0f;
 
 	setType(SPACE_SHIP);
@@ -60,8 +60,8 @@ void SpaceShip::update() {
 		getTransform()->position.y + getHeight() / 2);
 
 	// Set whisker endpoints
-	m_whiskerEnds[0] = m_shipCenterPoint + Util::getOrientation(m_rotationAngle - 30) * m_whiskerLen;
-	m_whiskerEnds[1] = m_shipCenterPoint + Util::getOrientation(m_rotationAngle + 30) * m_whiskerLen;
+	m_whiskerEnds[0] = m_shipCenterPoint + Util::getOrientation(m_rotationAngle - 45) * m_whiskerLen;
+	m_whiskerEnds[1] = m_shipCenterPoint + Util::getOrientation(m_rotationAngle + 45) * m_whiskerLen;
 
 	switch (m_currBehaviour) {
 		case Behaviour::SEEK:	Seek();		break;
@@ -180,21 +180,15 @@ void SpaceShip::Move() {
 // The simplest behaviours only just set the target direction
 void SpaceShip::Seek() {
 
-	// Direction with magnitude
-	m_targetDirection = m_destination - m_shipCenterPoint;
-
 	// Normalized direction
-	m_targetDirection = Util::normalize(m_targetDirection);
+	m_targetDirection = Util::normalize(m_destination - m_shipCenterPoint);
 }
 
 
 void SpaceShip::Flee() {
 
-	// Direction with magnitude
-	m_targetDirection = m_destination - m_shipCenterPoint;
-
 	// Normalized direction
-	m_targetDirection = Util::normalize(-m_targetDirection);
+	m_targetDirection = -Util::normalize(m_destination - m_shipCenterPoint);
 
 }
 
@@ -203,11 +197,11 @@ void SpaceShip::Arrive() {
 	// Normalized direction
 	m_targetDirection = Util::normalize(m_destination - m_shipCenterPoint);
 	auto distToTarg = Util::distance(m_shipCenterPoint, m_destination);
-	std::cout << distToTarg << std::endl;
 
 	if (distToTarg < m_dangerRadius)
 		getRigidBody()->velocity *= 0.95;
 	
+	// Arbritary stop radius but I guess all my variables are pretty arbritary
 	if (distToTarg < 5.0f) { 
 		setMaxSpeed(0);
 	}
@@ -215,5 +209,29 @@ void SpaceShip::Arrive() {
 
 void SpaceShip::Avoid() {
 
+	Seek();
 
+	bool 
+		whisker1Collide =
+			CollisionManager::lineRectCheck(m_shipCenterPoint, m_whiskerEnds[0],
+			obstacle->getTransform()->position, obstacle->getWidth(), obstacle->getHeight()),
+		whisker2Collide = 
+			CollisionManager::lineRectCheck(m_shipCenterPoint, m_whiskerEnds[1],
+			obstacle->getTransform()->position, obstacle->getWidth(), obstacle->getHeight());
+
+	// if either whisker touches something slow down
+	if (whisker1Collide || whisker2Collide)
+		getRigidBody()->velocity *= 0.75;
+
+	// Catch in case both whiskers are colliding, force a direction
+	if (whisker1Collide && whisker2Collide) { 
+		
+		setRotation(getRotation() + 25);
+	} else if (whisker1Collide) { 
+
+		setRotation(getRotation() + 25);
+	} else if (whisker2Collide) { 
+	
+		setRotation(getRotation() - 25);
+	}
 }
