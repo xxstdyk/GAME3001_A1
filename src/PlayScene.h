@@ -13,7 +13,7 @@ class PlayScene : public Scene {
 
 	private:
 	// IMGUI Function
-	void GUI_Function() const;
+	void GUI_Function();
 	std::string m_guiTitle;
 
 	glm::vec2 m_mousePosition;
@@ -26,6 +26,11 @@ class PlayScene : public Scene {
 	Label *m_pHotkeyExplainerLabel { };
 	Label *m_pInstructionsLabel { };
 
+	// Private funcs
+	private:
+	void SetupScene(const Behaviour);
+
+	// Public funcs
 	public:
 	PlayScene();
 	~PlayScene();

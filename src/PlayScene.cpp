@@ -29,7 +29,6 @@ void PlayScene::update() {
 
 	updateDisplayList();
 
-	//CollisionManager::AABBCheck(m_pSpaceShip, m_pObstacle);
 }
 
 void PlayScene::clean() {
@@ -44,11 +43,23 @@ void PlayScene::handleEvents() {
 	}
 
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_1)) {
-		TheGame::Instance()->changeSceneState(START_SCENE);
+		m_pSpaceShip->setBehaviour(Behaviour::SEEK);
+		SetupScene(m_pSpaceShip->getCurrBehaviour());
 	}
 
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_2)) {
-		TheGame::Instance()->changeSceneState(END_SCENE);
+		m_pSpaceShip->setBehaviour(Behaviour::FLEE);
+		SetupScene(m_pSpaceShip->getCurrBehaviour());
+	}
+
+	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_3)) {
+		m_pSpaceShip->setBehaviour(Behaviour::ARRIVE);
+		SetupScene(m_pSpaceShip->getCurrBehaviour());
+	}
+
+	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_4)) {
+		m_pSpaceShip->setBehaviour(Behaviour::AVOID);
+		SetupScene(m_pSpaceShip->getCurrBehaviour());
 	}
 }
 
@@ -74,9 +85,59 @@ void PlayScene::start() {
 	m_pInstructionsLabel = new Label("Use IMGUI or 1-4 to switch between behaviours", "Consolas", 24, black, glm::vec2(400.0f, 56.0f));
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
+
+	// Target
+	m_pTarget = new Target();
+	m_pTarget->setEnabled(true);
+	addChild(m_pTarget);
+
+	// Ship
+	m_pSpaceShip = new SpaceShip();
+	m_pSpaceShip->setEnabled(true);
+	m_pSpaceShip->setDestination(glm::vec2(
+		m_pTarget->getTransform()->position.x + m_pTarget->getWidth() / 2,
+		m_pTarget->getTransform()->position.y + m_pTarget->getHeight() / 2));
+	addChild(m_pSpaceShip);
 }
 
-void PlayScene::GUI_Function() const {
+
+// Code to handle the moving and resetting of all the object positions
+void PlayScene::SetupScene(const Behaviour _behaviour) {
+
+	switch (_behaviour) {
+
+		case Behaviour::AVOID:
+
+		case Behaviour::SEEK:
+		case Behaviour::ARRIVE:
+
+			m_pTarget->getTransform()->position = glm::vec2(480, 280);
+
+			m_pSpaceShip->setDestination(glm::vec2(
+				m_pTarget->getTransform()->position.x + m_pTarget->getWidth() / 2,
+				m_pTarget->getTransform()->position.y + m_pTarget->getHeight() / 2));
+
+			m_pSpaceShip->getTransform()->position = glm::vec2(-100, 100);
+
+			break;
+
+		case Behaviour::FLEE:
+
+			m_pTarget->getTransform()->position = glm::vec2(480, 280);
+
+			m_pSpaceShip->setDestination(glm::vec2(
+				m_pTarget->getTransform()->position.x + m_pTarget->getWidth() / 2,
+				m_pTarget->getTransform()->position.y + m_pTarget->getHeight() / 2));
+
+			m_pSpaceShip->getTransform()->position = glm::vec2(300 - 64, 200 - 64);
+
+			break;
+
+	}
+
+}
+
+void PlayScene::GUI_Function() {
 	// Always open with a NewFrame
 	ImGui::NewFrame();
 
@@ -88,11 +149,17 @@ void PlayScene::GUI_Function() const {
 
 	if (ImGui::Button("1. Seeking")) {
 
+		m_pSpaceShip->setBehaviour(Behaviour::SEEK);
+		SetupScene(m_pSpaceShip->getCurrBehaviour());
+
 	}
 
 	ImGui::SameLine();
 
 	if (ImGui::Button("2. Fleeing")) {
+
+		m_pSpaceShip->setBehaviour(Behaviour::FLEE);
+		SetupScene(m_pSpaceShip->getCurrBehaviour());
 
 	}
 
@@ -100,30 +167,32 @@ void PlayScene::GUI_Function() const {
 
 	if (ImGui::Button("3. Arrival")) {
 
+		m_pSpaceShip->setBehaviour(Behaviour::ARRIVE);
+		SetupScene(m_pSpaceShip->getCurrBehaviour());
+
 	}
 
-	if (ImGui::Button("4. Obstacle Avoidance")) {
+	ImGui::SameLine();
+
+	if (ImGui::Button("4. Avoidance")) {
+
+		m_pSpaceShip->setBehaviour(Behaviour::AVOID);
+		SetupScene(m_pSpaceShip->getCurrBehaviour());
 
 	}
 
 	ImGui::Separator();
 
 	static bool whiskersEnabled = false;
-	if (ImGui::Checkbox("Enable Whiskers", &whiskersEnabled)) { 
-	
+	if (ImGui::Checkbox("Show Whiskers", &whiskersEnabled)) {
 
+		m_pSpaceShip->RenderWhiskers(whiskersEnabled);
 	}
 
-	ImGui::Separator();
+	static bool dangerRadiusEnabled = false;
+	if (ImGui::Checkbox("Show Slowdown Radius", &dangerRadiusEnabled)) {
 
-	if (ImGui::Button("Start")) {
-
-	}
-
-	ImGui::SameLine();
-
-	if (ImGui::Button("Reset")) {
-
+		m_pSpaceShip->RenderDangerRadius(dangerRadiusEnabled);
 	}
 
 	ImGui::End();

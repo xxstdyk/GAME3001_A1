@@ -4,11 +4,16 @@
 #include "DisplayObject.h"
 #include "TextureManager.h"
 
+enum class Behaviour { SEEK, FLEE, ARRIVE, AVOID, NUM_BEHAVIOURS };
+
 class SpaceShip final : public DisplayObject {
 
 	// Member Variables
 	private:
+	Behaviour m_currBehaviour;
+
 	glm::vec2
+		m_shipCenterPoint,
 		m_destination,
 		m_targetDirection,
 		m_orientation;
@@ -19,10 +24,28 @@ class SpaceShip final : public DisplayObject {
 		m_turnRate,
 		m_accelerationRate;
 
+	// Member variables for debugging
+
+	glm::vec2 m_whiskerEnds[2];
+	float m_whiskerLen;
+
+	int m_dangerRadius;
+
+	bool
+		m_drawWhiskers,
+		m_drawDangerRadius;
+
 	// Member Functions
 	private:
-	void m_Move();
 	void LoadSounds();
+
+	void LookWhereYoureGoing();
+	void Move();
+
+	void Seek();
+	void Flee();
+	void Arrive();
+	void Avoid();
 
 	// Public Variables
 
@@ -40,6 +63,9 @@ class SpaceShip final : public DisplayObject {
 	void clean() override;
 
 	// Getters and setters
+	Behaviour getCurrBehaviour() const;
+	void setBehaviour(const Behaviour);
+
 	void setDestination(const glm::vec2);
 	void setMaxSpeed(const float);
 
@@ -54,6 +80,9 @@ class SpaceShip final : public DisplayObject {
 
 	float getAccelerationRate() const;
 	void setAccelerationRate(const float);
+
+	void RenderWhiskers(bool);
+	void RenderDangerRadius(bool);
 
 };
 
