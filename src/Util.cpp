@@ -178,6 +178,21 @@ float Util::lerpAngle(const float a, const float b, const float t)
 }
 
 /**
+* 
+* 
+*/
+glm::vec2 Util::getOrientation(const float _ang) { 
+
+	const auto offset = -90.0f;
+	const auto angle_in_rads = (_ang + offset) * Util::Deg2Rad;
+
+	const auto x = cos(angle_in_rads);
+	const auto y = sin(angle_in_rads);
+
+	return glm::vec2(x, y);
+}
+
+/**
 * Loops the value t, so that it is never larger than length and never smaller than 0.
 *
 */

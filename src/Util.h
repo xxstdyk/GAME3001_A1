@@ -34,6 +34,8 @@ public:
 	static float lerpUnclamped(float a, float b, float t);
 	static float lerpAngle(float a, float b, float t);
 	static float repeat(float t, float length);
+
+	static glm::vec2 getOrientation(const float _ang);
 	
 	static float RandomRange(float min, float max);
 	static glm::vec2 RandomRange(glm::vec2 p0, glm::vec2 p1);
