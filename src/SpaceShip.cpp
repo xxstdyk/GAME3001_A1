@@ -4,7 +4,9 @@
 #include "Game.h"
 
 SpaceShip::SpaceShip() {
-	TextureManager::Instance()->load("../Assets/textures/spaceship.png", "spaceship");
+	TextureManager::Instance()->load("../Assets/textures/ship.png", "spaceship");
+
+	LoadSounds();
 
 	auto size = TextureManager::Instance()->getTextureSize("spaceship");
 	setWidth(size.x);
@@ -21,6 +23,13 @@ SpaceShip::SpaceShip() {
 	getRigidBody()->acceleration = glm::vec2(0.0f, 0.0f);
 	getRigidBody()->isColliding = false;
 	setType(SPACE_SHIP);
+}
+
+void SpaceShip::LoadSounds() { 
+
+	SoundManager::Instance().load("../Assets/audio/blip.mp3", "blip", SoundType::SOUND_SFX);
+	SoundManager::Instance().load("../Assets/audio/crowdYay.mp3", "yay", SoundType::SOUND_SFX);
+	SoundManager::Instance().load("../Assets/audio/ouch.mp3", "ouch", SoundType::SOUND_SFX);
 }
 
 SpaceShip::~SpaceShip()

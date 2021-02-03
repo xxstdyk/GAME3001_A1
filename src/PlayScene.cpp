@@ -29,7 +29,7 @@ void PlayScene::update() {
 
 	updateDisplayList();
 
-	CollisionManager::AABBCheck(m_pSpaceShip, m_pObstacle);
+	//CollisionManager::AABBCheck(m_pSpaceShip, m_pObstacle);
 }
 
 void PlayScene::clean() {
@@ -53,10 +53,19 @@ void PlayScene::handleEvents() {
 }
 
 void PlayScene::start() {
-	const SDL_Color black = { 0, 0, 0, 255 };
 
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
+
+	// Load Music
+	SoundManager::Instance().load("../Assets/audio/bgMusic.mp3", "bgMusic", SoundType::SOUND_MUSIC);
+
+	// Play Music
+	SoundManager::Instance().setMusicVolume(48);
+	SoundManager::Instance().playMusic("bgMusic");
+
+	// Labels
+	const SDL_Color black = { 0, 0, 0, 255 };
 
 	m_pHotkeyExplainerLabel = new Label("Use ` to open the IMGUI interface", "Consolas", 24, black, glm::vec2(400.0f, 24.0f));
 	m_pHotkeyExplainerLabel->setParent(this);
@@ -65,20 +74,6 @@ void PlayScene::start() {
 	m_pInstructionsLabel = new Label("Use IMGUI or 1-4 to switch between behaviours", "Consolas", 24, black, glm::vec2(400.0f, 56.0f));
 	m_pInstructionsLabel->setParent(this);
 	addChild(m_pInstructionsLabel);
-
-	m_pTarget = new Target();
-	m_pTarget->getTransform()->position = glm::vec2(700.0f, 300.0f);
-	addChild(m_pTarget);
-
-	m_pObstacle = new Obstacle();
-	m_pObstacle->getTransform()->position = glm::vec2(500.0f, 300.0f);
-	addChild(m_pObstacle);
-
-	m_pSpaceShip = new SpaceShip();
-	m_pSpaceShip->getTransform()->position = glm::vec2(100.0f, 300.0f);
-	m_pSpaceShip->setEnabled(false);
-	m_pSpaceShip->setDestination(m_pTarget->getTransform()->position);
-	addChild(m_pSpaceShip);
 }
 
 void PlayScene::GUI_Function() const {
@@ -91,19 +86,31 @@ void PlayScene::GUI_Function() const {
 	ImGui::Begin("GAME3001 - Assignment 1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
 
-	if (ImGui::Button("Seeking")) {
+	if (ImGui::Button("1. Seeking")) {
 
-	} ImGui::SameLine();
+	}
 
-	if (ImGui::Button("Fleeing")) {
+	ImGui::SameLine();
 
-	} ImGui::SameLine();
+	if (ImGui::Button("2. Fleeing")) {
 
-	if (ImGui::Button("Arrival")) {
+	}
 
-	} ImGui::SameLine();
+	ImGui::SameLine();
 
-	if (ImGui::Button("Obstacle Avoidance")) {
+	if (ImGui::Button("3. Arrival")) {
+
+	}
+
+	if (ImGui::Button("4. Obstacle Avoidance")) {
+
+	}
+
+	ImGui::Separator();
+
+	static bool whiskersEnabled = false;
+	if (ImGui::Checkbox("Enable Whiskers", &whiskersEnabled)) { 
+	
 
 	}
 
@@ -111,17 +118,12 @@ void PlayScene::GUI_Function() const {
 
 	if (ImGui::Button("Start")) {
 
-		m_pSpaceShip->setEnabled(true);
 	}
 
 	ImGui::SameLine();
 
 	if (ImGui::Button("Reset")) {
 
-		m_pSpaceShip->getTransform()->position = glm::vec2(100.0f, 100.f);
-		m_pSpaceShip->setEnabled(false);
-		m_pSpaceShip->getRigidBody()->velocity = glm::vec2(0.0f, 0.0f);
-		m_pSpaceShip->setRotation(0.0f);
 	}
 
 	ImGui::End();

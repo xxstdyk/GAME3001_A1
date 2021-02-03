@@ -5,6 +5,28 @@
 #include "TextureManager.h"
 
 class SpaceShip final : public DisplayObject {
+
+	// Member Variables
+	private:
+	glm::vec2
+		m_destination,
+		m_targetDirection,
+		m_orientation;
+
+	float
+		m_maxSpeed,
+		m_rotationAngle,
+		m_turnRate,
+		m_accelerationRate;
+
+	// Member Functions
+	private:
+	void m_Move();
+	void LoadSounds();
+
+	// Public Variables
+
+	// Public Functions
 	public:
 	// constructor(s)
 	SpaceShip();
@@ -33,21 +55,6 @@ class SpaceShip final : public DisplayObject {
 	float getAccelerationRate() const;
 	void setAccelerationRate(const float);
 
-
-	private:
-
-	glm::vec2
-		m_destination,
-		m_targetDirection,
-		m_orientation;
-
-	float 
-		m_maxSpeed,
-		m_rotationAngle,
-		m_turnRate,
-		m_accelerationRate;
-
-	void m_Move();
 };
 
 #endif /* defined (__SPACE_SHIP__) */
