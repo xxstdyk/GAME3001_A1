@@ -76,6 +76,7 @@ void PlayScene::start() {
 	// Load sounds
 	SoundManager::Instance().load("../Assets/audio/bgMusic.mp3", "bgMusic", SoundType::SOUND_MUSIC);
 	SoundManager::Instance().load("../Assets/audio/blip.wav", "blip", SoundType::SOUND_SFX);
+	SoundManager::Instance().setSoundVolume(32);
 
 	// Play Music
 	SoundManager::Instance().setMusicVolume(48);

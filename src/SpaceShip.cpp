@@ -229,7 +229,6 @@ void SpaceShip::Avoid() {
 
 	if (m_inDanger && m_dangerRadius * m_dangerRadius >= CollisionManager::circleAABBsquaredDistance(m_shipCenterPoint, m_dangerRadius,
 		obstacle->getTransform()->position, obstacle->getWidth(), obstacle->getHeight())) {
-		std::cout << "not in danger anymore" << std::endl;
 		m_inDanger = false;
 	}
 
