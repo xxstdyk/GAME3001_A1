@@ -69,11 +69,13 @@ void PlayScene::handleEvents() {
 
 void PlayScene::start() {
 
+
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
 
-	// Load Music
+	// Load sounds
 	SoundManager::Instance().load("../Assets/audio/bgMusic.mp3", "bgMusic", SoundType::SOUND_MUSIC);
+	SoundManager::Instance().load("../Assets/audio/blip.wav", "blip", SoundType::SOUND_SFX);
 
 	// Play Music
 	SoundManager::Instance().setMusicVolume(48);
@@ -116,6 +118,8 @@ void PlayScene::start() {
 
 // Code to handle the moving and resetting of all the object positions
 void PlayScene::SetupScene(const Behaviour _behaviour) {
+
+	SoundManager::Instance().playSound("blip");
 
 	switch (_behaviour) {
 

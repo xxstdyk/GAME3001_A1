@@ -32,7 +32,6 @@ SpaceShip::SpaceShip() {
 
 void SpaceShip::LoadSounds() {
 
-	SoundManager::Instance().load("../Assets/audio/blip.mp3", "blip", SoundType::SOUND_SFX);
 	SoundManager::Instance().load("../Assets/audio/crowdYay.mp3", "yay", SoundType::SOUND_SFX);
 	SoundManager::Instance().load("../Assets/audio/ouch.mp3", "ouch", SoundType::SOUND_SFX);
 }
@@ -70,7 +69,6 @@ void SpaceShip::update() {
 		case Behaviour::AVOID:	Avoid();	break;
 	}
 
-	LookWhereYoureGoing();
 	Move();
 }
 
@@ -182,6 +180,7 @@ void SpaceShip::Seek() {
 
 	// Normalized direction
 	m_targetDirection = Util::normalize(m_destination - m_shipCenterPoint);
+	LookWhereYoureGoing();
 }
 
 
@@ -189,6 +188,7 @@ void SpaceShip::Flee() {
 
 	// Normalized direction
 	m_targetDirection = -Util::normalize(m_destination - m_shipCenterPoint);
+	LookWhereYoureGoing();
 
 }
 
@@ -205,11 +205,13 @@ void SpaceShip::Arrive() {
 	if (distToTarg < 5.0f) { 
 		setMaxSpeed(0);
 	}
+
+	LookWhereYoureGoing();
 }
 
 void SpaceShip::Avoid() {
 
-	Seek();
+	m_targetDirection = Util::normalize(m_destination - m_shipCenterPoint);
 
 	bool 
 		whisker1Collide =
@@ -220,18 +222,30 @@ void SpaceShip::Avoid() {
 			obstacle->getTransform()->position, obstacle->getWidth(), obstacle->getHeight());
 
 	// if either whisker touches something slow down
-	if (whisker1Collide || whisker2Collide)
+	if (whisker1Collide || whisker2Collide) { 
+		m_inDanger = true;
 		getRigidBody()->velocity *= 0.75;
+	}
+
+	if (m_inDanger && m_dangerRadius * m_dangerRadius >= CollisionManager::circleAABBsquaredDistance(m_shipCenterPoint, m_dangerRadius,
+		obstacle->getTransform()->position, obstacle->getWidth(), obstacle->getHeight())) {
+		std::cout << "not in danger anymore" << std::endl;
+		m_inDanger = false;
+	}
 
 	// Catch in case both whiskers are colliding, force a direction
 	if (whisker1Collide && whisker2Collide) { 
 		
-		setRotation(getRotation() + 25);
+		setRotation(getRotation() + 20);
 	} else if (whisker1Collide) { 
 
-		setRotation(getRotation() + 25);
+		setRotation(getRotation() + 20);
 	} else if (whisker2Collide) { 
 	
-		setRotation(getRotation() - 25);
+		setRotation(getRotation() - 20);
 	}
+
+	if (!m_inDanger)
+		LookWhereYoureGoing();
+
 }

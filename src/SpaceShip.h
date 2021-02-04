@@ -34,7 +34,8 @@ class SpaceShip final : public DisplayObject {
 
 	bool
 		m_drawWhiskers,
-		m_drawDangerRadius;
+		m_drawDangerRadius,
+		m_inDanger;
 
 	// Member Functions
 	private:
